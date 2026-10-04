@@ -1,0 +1,11 @@
+# Build Secure 24 — Submission Metadata
+# Official Deadline: October 6, 2026, 11:00 AM IST (2026-10-06T11:00:00+05:30)
+
+version: "1.0"
+
+submission:
+  team_id: ""
+  repository: ""
+  commit_sha: ""
+  deployment_url: ""
+  submitted_at: ""
