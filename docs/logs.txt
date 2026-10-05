@@ -306,7 +306,7 @@ Agent Response Summary:
 Created the Cart and Orders modules including complete schema validation, secure transactional checkout services, controllers, and authenticated routes. Followed all requirements regarding Zod, Prisma, and authorization logic.
 
 Commit SHA:
-(pending)
+f7e3d10
 
 Files Modified / Created:
 * src/modules/cart/schema.ts (Created)
@@ -321,3 +321,131 @@ Files Modified / Created:
 Actions Taken:
 * Created directories for cart and orders.
 * Wrote fully implemented TS files for both modules.
+
+================================================================================
+[2026-10-05T22:04:33+05:30] Build Products module
+================================================================================
+User Prompt (verbatim):
+<USER_REQUEST>
+Build the Products module for MarketHub. Create ALL of the following files with complete implementations. Ensure you use Zod for validation, Prisma for DB, and the Authorization Engine (`requireAuthentication`, `authorize`) to protect routes.
+
+## 1. /home/ram/workspace/BuildSecure/src/modules/products/product.schema.ts
+- `ProductCreateInput`: name, description, price (number), compareAtPrice, stock (number), sku, categoryId, images.
+- `ProductUpdateInput`: partial of create.
+- `ProductQuery`: page, pageSize, categorySlug, vendorSlug, minPrice, maxPrice, status.
+
+## 2. /home/ram/workspace/BuildSecure/src/modules/products/product.service.ts
+- `createProduct(vendorId, data)`: Creates product.
+- `updateProduct(vendorId, productId, data)`: Ensure vendor owns the product.
+- `listProducts(query)`: Implement filtering by categorySlug, vendorSlug, price range, and status. Use pagination utility (`parsePagination`, `buildPaginationMeta`).
+- `getProduct(id)`: Include vendor and category.
+- `getProductBySlug(slug)`: If you want slug-based access, or just use ID. (Assume ID).
+- `deleteProduct(vendorId, productId)`: Soft delete (set status = ARCHIVED).
+- `updateStock(vendorId, productId, quantity)`: Atomic stock update.
+
+## 3. /home/ram/workspace/BuildSecure/src/modules/products/product.controller.ts
+Map req/res to service methods.
+- GET `/api/products` (public)
+- GET `/api/products/:id` (public)
+- POST `/api/products` (requireAuth, requireRole(['VENDOR']))
+- PUT `/api/products/:id` (requireAuth, requireRole(['VENDOR']))
+- DELETE `/api/products/:id` (requireAuth, requireRole(['VENDOR']))
+- PATCH `/api/products/:id/stock` (requireAuth, requireRole(['VENDOR']))
+
+Extract `vendorId` from `req.securityContext.userId` (assuming user's vendor profile is linked, so you might need to fetch the vendor profile for the user first to get the `vendor.id`, or just pass `userId` to the service and let the service verify ownership via the Vendor model).
+
+## 4. /home/ram/workspace/BuildSecure/src/modules/products/product.routes.ts
+Assemble the routes with proper middleware (`validate`, `requireAuthentication`).
+
+Use `.js` extensions for local imports. No TODOs. Ensure files are fully complete.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-10-05T22:04:33+05:30.
+</ADDITIONAL_METADATA>
+
+Agent Response:
+I will build the Products module by creating the four requested files: `product.schema.ts`, `product.service.ts`, `product.controller.ts`, and `product.routes.ts`. I will use Zod for validation, implement the necessary database queries via Prisma, enforce authorization checks, and use Express routes.
+
+Agent Response Summary:
+Created the full Products module including schema validation, service logic with authorization checks for vendor ownership, controllers mapping requests to services, and the Express router. The code adheres to the requested architecture.
+
+Commit SHA:
+cf7e7f4
+
+Files Modified / Created:
+* src/modules/products/product.schema.ts (Created)
+* src/modules/products/product.service.ts (Created)
+* src/modules/products/product.controller.ts (Created)
+* src/modules/products/product.routes.ts (Created)
+* docs/logs.txt (Modified)
+
+Actions Taken:
+* Created product.schema.ts
+* Created product.service.ts
+* Created product.controller.ts
+* Created product.routes.ts
+* Executed git add -A; git commit -m "Build Products module"
+================================================================================
+[2026-10-05T22:04:32+05:30] Build Users, Vendors, and Categories modules
+================================================================================
+User Prompt (verbatim):
+Build the Users, Vendors, and Categories modules for MarketHub. Create ALL of the following files with complete implementations. Ensure you use Zod for validation, the Prisma client for DB access, and the Authorization Engine (`requireAuthentication`, `requirePermission`, and `authorize`) to protect routes.
+
+## 1. /home/ram/workspace/BuildSecure/src/modules/users/* (schema, service, controller, routes)
+- schema: `UserUpdateInput` (name, status)
+- service: `getProfile(userId)`, `updateProfile(userId, data)`, `listUsers(query)` (admin only)
+- controller: mapping methods to service
+- routes: 
+  - GET `/api/users/me` (requires auth, handled in auth module, but add a stub or redirect if needed, or just let auth handle it. Actually, just do GET `/api/users/:id`, PUT `/api/users/:id` with proper `authorize` checks).
+  - GET `/api/users` (admin only)
+
+## 2. /home/ram/workspace/BuildSecure/src/modules/vendors/* (schema, service, controller, routes)
+- schema: `VendorRegisterInput` (businessName, description), `VendorUpdateInput` (businessName, description, logo)
+- service: 
+  - `registerVendor(userId, data)`: Creates a Vendor profile with PENDING status.
+  - `getVendor(id)`
+  - `getVendorBySlug(slug)`
+  - `updateVendor(userId, id, data)`: Must check if `userId` owns the vendor.
+  - `listVendors(query)`: List ACTIVE vendors for customers, or all for admins.
+  - `approveVendor(adminId, vendorId)`: Sets status to ACTIVE, changes User role to VENDOR.
+- controller: mapping methods
+- routes: Apply `requireAuthentication` and `requirePermission` as appropriate.
+
+## 3. /home/ram/workspace/BuildSecure/src/modules/categories/* (schema, service, controller, routes)
+- schema: `CategoryCreateInput` (name, slug, description, parentId), `CategoryUpdateInput`
+- service: `createCategory`, `updateCategory`, `listCategories`, `getCategoryBySlug`, `deleteCategory`
+- controller: mapping methods
+- routes: 
+  - GET `/api/categories` and GET `/api/categories/:slug` are public (no auth).
+  - POST, PUT, DELETE require `ADMIN` role (`requireRole(['ADMIN'])`).
+
+Use `.js` extensions for all local imports. Ensure error handling, safe responses, and no TODOs.
+
+Agent Response:
+I have built the Users, Vendors, and Categories modules as requested. All required files (schema, service, controller, and routes) for each of these modules have been successfully created and implemented using Zod, Prisma, and the Authorization Engine for RBAC.
+
+Agent Response Summary:
+Created the full Users, Vendors, and Categories modules including Zod schemas, service logic with authorization checks for vendor ownership and admin roles, controllers mapping requests to services, and the Express routers. The code adheres to the requested architecture without any TODOs.
+
+Commit SHA:
+$(git log -1 --format="%h" 2>/dev/null || echo "unknown")
+
+Files Modified / Created:
+* src/modules/users/schema.ts (Created)
+* src/modules/users/service.ts (Created)
+* src/modules/users/controller.ts (Created)
+* src/modules/users/routes.ts (Created)
+* src/modules/vendors/schema.ts (Created)
+* src/modules/vendors/service.ts (Created)
+* src/modules/vendors/controller.ts (Created)
+* src/modules/vendors/routes.ts (Created)
+* src/modules/categories/schema.ts (Created)
+* src/modules/categories/service.ts (Created)
+* src/modules/categories/controller.ts (Created)
+* src/modules/categories/routes.ts (Created)
+
+Actions Taken:
+* Created Users module
+* Created Vendors module
+* Created Categories module
+* Updated logs.txt
