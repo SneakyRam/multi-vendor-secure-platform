@@ -256,3 +256,68 @@ Actions Taken:
 * Created authorization policies directories
 * Wrote 13 authorization and middleware files
 * Logged turn per rules
+================================================================================
+2026-10-05T22:05:00+05:30 Build Cart and Orders modules
+================================================================================
+User Prompt (verbatim):
+Build the Cart and Orders modules for MarketHub. Create ALL of the following files with complete implementations. Ensure you use Zod, Prisma, and the Authorization Engine.
+
+## 1. /home/ram/workspace/BuildSecure/src/modules/cart/* (schema, service, controller, routes)
+- schema: `CartItemInput` (productId, quantity - min 1)
+- service: 
+  - `getCart(userId)`: Get or create Cart for user, include items and product details.
+  - `addItem(userId, productId, quantity)`: Add to cart or increment quantity if exists.
+  - `updateItem(userId, cartItemId, quantity)`
+  - `removeItem(userId, cartItemId)`
+  - `clearCart(userId)`
+- controller: map to service, use `req.securityContext.userId`.
+- routes: GET, POST, PUT, DELETE under `/api/cart`. Require authentication.
+
+## 2. /home/ram/workspace/BuildSecure/src/modules/orders/* (schema, service, controller, routes)
+- schema: `OrderCreateInput` (shippingAddressId)
+- service:
+  - `checkout(userId, shippingAddressId)`: 
+    1. Fetch user's cart and items.
+    2. Verify stock for all items.
+    3. Group items by `vendorId`.
+    4. Create an `OrderGroup` for the customer.
+    5. Create an `Order` for each vendor, summing sub-totals.
+    6. Create `OrderItem` for each product, snapshotting `productName` and `productPrice`.
+    7. Decrement product stock.
+    8. Clear the cart.
+    *Must use Prisma Interactive Transaction (`prisma.$transaction(async (tx) => { ... })`).*
+  - `getCustomerOrders(userId)`: List `OrderGroup` with nested `Order` and `OrderItem`.
+  - `getVendorOrders(userId)`: Fetch vendor profile for userId, list `Order` where `vendorId` matches.
+  - `updateOrderStatus(userId, orderId, status)`: Vendor updates their specific order status.
+- controller: map to service.
+- routes: 
+  - POST `/api/orders/checkout`
+  - GET `/api/orders/customer`
+  - GET `/api/orders/vendor`
+  - PATCH `/api/orders/vendor/:id/status`
+Require authentication and proper roles.
+
+Use `.js` extensions for local imports. No TODOs. Ensure files are fully complete and use secure transactional boundaries.
+
+Agent Response:
+I have built the requested Cart and Orders modules for MarketHub. All files for both modules (schema, service, controller, and routes) have been implemented. Prisma interactive transactions are correctly used for the checkout functionality to maintain strong data consistency and stock atomicity.
+
+Agent Response Summary:
+Created the Cart and Orders modules including complete schema validation, secure transactional checkout services, controllers, and authenticated routes. Followed all requirements regarding Zod, Prisma, and authorization logic.
+
+Commit SHA:
+(pending)
+
+Files Modified / Created:
+* src/modules/cart/schema.ts (Created)
+* src/modules/cart/service.ts (Created)
+* src/modules/cart/controller.ts (Created)
+* src/modules/cart/routes.ts (Created)
+* src/modules/orders/schema.ts (Created)
+* src/modules/orders/service.ts (Created)
+* src/modules/orders/controller.ts (Created)
+* src/modules/orders/routes.ts (Created)
+
+Actions Taken:
+* Created directories for cart and orders.
+* Wrote fully implemented TS files for both modules.
