@@ -500,7 +500,7 @@ Agent Response Summary:
 Created the Security Core layer including auditing, security event logging, risk engine heuristics, input sanitization, and a Redis-backed rate-limiting middleware. The code fulfills all robust security requirements.
 
 Commit SHA:
-pending
+5fafbca
 
 Files Modified / Created:
 * src/security/audit.ts (Created)
@@ -543,7 +543,7 @@ Agent Response Summary:
 Created the AI tools directory and index file with the tools schema and handler implementations. Also, created the ai module in `src/modules/ai` and implemented the schema, service (with audit logging), controller, and Express routes.
 
 Commit SHA:
-pending
+5fafbca
 
 Files Modified / Created:
 * src/ai/tools/index.ts (Created)
@@ -558,3 +558,49 @@ Actions Taken:
 * Created src/modules/ai/service.ts
 * Created src/modules/ai/controller.ts
 * Created src/modules/ai/routes.ts
+================================================================================
+[2026-10-05T22:11:26+05:30] Build Testing and Documentation layer
+================================================================================
+User Prompt (verbatim):
+<USER_REQUEST>
+Build the Testing and Documentation layer for MarketHub. Create ALL of the following files:
+
+## 1. /home/ram/workspace/BuildSecure/docs/API_CONTRACTS.md
+Create a Markdown file documenting the core API contracts for the MarketHub backend. Focus on:
+- Auth (POST /api/auth/register, POST /api/auth/login, POST /api/auth/logout, GET /api/auth/me)
+- Products (GET /api/products, POST /api/products, PUT /api/products/:id, DELETE /api/products/:id)
+- Cart (GET /api/cart, POST /api/cart, PUT /api/cart/:id, DELETE /api/cart/:id)
+- Orders (POST /api/orders/checkout, GET /api/orders/customer, GET /api/orders/vendor)
+Include expected JSON body requests and standard `{ success: true, data }` or `{ success: false, error: { code, message } }` response formats.
+
+## 2. /home/ram/workspace/BuildSecure/src/__tests__/security.test.ts
+Write a Vitest test suite that sets up the Express app and tests the core security constraints:
+- Try to access a protected route without a session (should return 401 UNAUTHENTICATED).
+- Try to access an ADMIN route with a CUSTOMER session (should return 403 FORBIDDEN).
+- Try to access an unmapped route (should return 404 NOT_FOUND).
+Use `supertest` to mock requests. You don't need a live DB connection for these basic middleware unit tests, just mock the `validateSession` or the `requireAuthentication` middleware using `vi.mock()` if necessary, or just test the 401 response which shouldn't hit the DB anyway.
+
+Wrap up these files perfectly with no TODOs.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-10-05T22:11:26+05:30.
+</ADDITIONAL_METADATA>
+
+Agent Response:
+I have built the Testing and Documentation layer by creating the API contracts documentation and the security test suite.
+
+Agent Response Summary:
+Created docs/API_CONTRACTS.md containing the API documentation for Auth, Products, Cart, and Orders. Also created src/__tests__/security.test.ts using Vitest and supertest to verify authentication, RBAC authorization, and not-found handling for the API routes.
+
+Commit SHA:
+pending
+
+Files Modified / Created:
+* docs/API_CONTRACTS.md (Created)
+* src/__tests__/security.test.ts (Created)
+* docs/logs.txt (Modified)
+
+Actions Taken:
+* Created docs/API_CONTRACTS.md
+* Created src/__tests__/security.test.ts
+* Updated docs/logs.txt
