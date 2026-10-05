@@ -1,5 +1,6 @@
 import { prisma } from '../database/prisma.js';
 import { SecurityDecision } from '../types/security.js';
+import { graphService } from '../neo4j/graph.service.js';
 
 export async function logSecurityEvent(params: {
   actorId?: string;
@@ -16,7 +17,7 @@ export async function logSecurityEvent(params: {
   metadata?: any;
 }): Promise<void> {
   try {
-    await prisma.securityEvent.create({
+    const event = await prisma.securityEvent.create({
       data: {
         actorId: params.actorId || null,
         actorRole: params.actorRole || null,
@@ -32,6 +33,26 @@ export async function logSecurityEvent(params: {
         metadata: params.metadata ? JSON.stringify(params.metadata) : null,
       },
     });
+
+    // Fire-and-forget sync to Neo4j graph for relationship analysis
+    graphService.syncSecurityEvent({
+      id: event.id,
+      actorId: event.actorId,
+      action: event.action,
+      decision: event.decision,
+      resourceType: event.resourceType,
+      resourceId: event.resourceId,
+      timestamp: event.timestamp,
+    }).catch(console.error);
+
+    if (params.actorId && params.ipAddress) {
+      graphService.syncDeviceRelationship({
+        userId: params.actorId,
+        ipAddress: params.ipAddress,
+        userAgent: params.userAgent || null,
+      }).catch(console.error);
+    }
+
   } catch (error) {
     // Fail silently to prevent breaking application flow
     console.error('Failed to log security event:', error);

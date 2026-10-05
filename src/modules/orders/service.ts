@@ -1,9 +1,10 @@
 import { prisma } from '../../database/prisma.js';
 import { NotFoundError, ValidationError, AuthorizationError } from '../../utils/errors.js';
 import { Prisma } from '@prisma/client';
+import { graphService } from '../../neo4j/graph.service.js';
 
 export async function checkout(userId: string, shippingAddressId?: string) {
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const cart = await tx.cart.findUnique({
       where: { userId },
       include: {
@@ -53,6 +54,8 @@ export async function checkout(userId: string, shippingAddressId?: string) {
         status: 'PENDING',
       },
     });
+    
+    const createdOrders = [];
 
     for (const [vId, items] of Object.entries(vendorGroups)) {
       const subtotal = vendorSubtotals[vId];
@@ -65,6 +68,7 @@ export async function checkout(userId: string, shippingAddressId?: string) {
           status: 'PENDING',
         },
       });
+      createdOrders.push(order);
 
       for (const item of items) {
         const productPrice = item.product.price;
@@ -92,8 +96,19 @@ export async function checkout(userId: string, shippingAddressId?: string) {
       where: { cartId: cart.id },
     });
 
-    return orderGroup;
+    return { orderGroup, createdOrders };
   });
+
+  // Fire-and-forget sync to Neo4j graph outside of transaction
+  for (const order of result.createdOrders) {
+    graphService.syncOrderRelationship({
+      customerId: userId,
+      orderId: order.id,
+      vendorId: order.vendorId,
+    }).catch(console.error);
+  }
+
+  return result.orderGroup;
 }
 
 export async function getCustomerOrders(userId: string) {

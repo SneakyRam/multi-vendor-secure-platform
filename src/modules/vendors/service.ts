@@ -2,6 +2,7 @@ import { prisma } from '../../database/prisma.js';
 import { VendorRegisterInput, VendorUpdateInput } from './schema.js';
 import { NotFoundError, ConflictError } from '../../utils/errors.js';
 import { VendorStatus } from '@prisma/client';
+import { graphService } from '../../neo4j/graph.service.js';
 
 function slugify(text: string) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
@@ -28,6 +29,15 @@ export async function registerVendor(userId: string, data: VendorRegisterInput) 
       status: VendorStatus.PENDING,
     }
   });
+
+  // Sync to Neo4j graph
+  graphService.syncVendorNode({
+    id: vendor.id,
+    businessName: vendor.businessName,
+    userId: vendor.userId,
+    status: vendor.status,
+  }).catch(console.error);
+
   return vendor;
 }
 
@@ -47,10 +57,19 @@ export async function updateVendor(userId: string, id: string, data: VendorUpdat
   const vendor = await prisma.vendor.findUnique({ where: { id } });
   if (!vendor) throw new NotFoundError('Vendor not found');
 
-  return prisma.vendor.update({
+  const updated = await prisma.vendor.update({
     where: { id },
     data,
   });
+
+  graphService.syncVendorNode({
+    id: updated.id,
+    businessName: updated.businessName,
+    userId: updated.userId,
+    status: updated.status,
+  }).catch(console.error);
+
+  return updated;
 }
 
 export async function listVendors(query: any, isAdmin: boolean) {
@@ -71,6 +90,13 @@ export async function approveVendor(adminId: string, vendorId: string) {
     where: { id: vendor.userId },
     data: { role: 'VENDOR' }
   });
+
+  graphService.syncVendorNode({
+    id: vendor.id,
+    businessName: vendor.businessName,
+    userId: vendor.userId,
+    status: vendor.status,
+  }).catch(console.error);
 
   return vendor;
 }

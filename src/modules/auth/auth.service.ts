@@ -5,6 +5,7 @@ import { ConflictError, UnauthorizedError, ForbiddenError, NotFoundError } from 
 import { RegisterInput, LoginInput } from './auth.schema.js';
 import { env } from '../../config/env.js';
 import { logger } from '../../utils/logger.js';
+import { graphService } from '../../neo4j/graph.service.js';
 
 export async function register(input: RegisterInput, ipAddress?: string, userAgent?: string) {
   const existingUser = await prisma.user.findUnique({
@@ -30,6 +31,23 @@ export async function register(input: RegisterInput, ipAddress?: string, userAge
   const { token, session } = await createSession(user.id, user.role, ipAddress, userAgent);
 
   logger.info({ event: 'USER_REGISTERED', userId: user.id, role: user.role });
+
+  // Fire-and-forget sync to Neo4j graph
+  graphService.syncUserNode({
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+    status: user.status,
+  }).catch(console.error);
+
+  if (ipAddress) {
+    graphService.syncDeviceRelationship({
+      userId: user.id,
+      ipAddress: ipAddress,
+      userAgent: userAgent || null,
+    }).catch(console.error);
+  }
 
   const safeUser = {
     id: user.id,
@@ -67,6 +85,14 @@ export async function login(input: LoginInput, ipAddress?: string, userAgent?: s
   const { token, session } = await createSession(user.id, user.role, ipAddress, userAgent);
 
   logger.info({ event: 'USER_LOGGED_IN', userId: user.id });
+
+  if (ipAddress) {
+    graphService.syncDeviceRelationship({
+      userId: user.id,
+      ipAddress: ipAddress,
+      userAgent: userAgent || null,
+    }).catch(console.error);
+  }
 
   const safeUser = {
     id: user.id,
