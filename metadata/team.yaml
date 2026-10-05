@@ -1,19 +1,17 @@
 # Build Secure 24 — Team Metadata
 # Team Composition Rule: Exactly 2 or 4 registered participants.
-# - If your team has 2 members: provide Member 1 and Member 2, and omit/delete Member 3 and 4.
-# - If your team has 4 members: provide all 4 members.
 
 team:
-  team_id: ""
-  name: ""
-  repository: "" # URL of the newly created GitHub repository for this project
+  team_id: "18"
+  name: "Wine"
+  repository: "https://github.com/SneakyRam/Wine-build-secure-MH-"
 
 members:
-  - name: ""
-    email: ""
-  - name: ""
-    email: ""
-  - name: ""
-    email: ""
-  - name: ""
-    email: ""
+  - name: "G. Ram Gopal"
+    email: "champram777@gmail.com"
+  - name: "D. Pavan Kumar"
+    email: "pavankumar9.d@gmail.com"
+  - name: "Vidath A."
+    email: "avidath2607@gmail.com"
+  - name: "Hasini M."
+    email: "hasinimohanthi@gmail.com"

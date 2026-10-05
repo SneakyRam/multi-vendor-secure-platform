@@ -4,8 +4,8 @@
 version: "1.0"
 
 submission:
-  team_id: ""
-  repository: ""
+  team_id: "18"
+  repository: "https://github.com/SneakyRam/Wine-build-secure-MH-"
   commit_sha: ""
   deployment_url: ""
   submitted_at: ""
