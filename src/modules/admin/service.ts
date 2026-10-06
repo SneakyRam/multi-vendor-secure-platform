@@ -10,7 +10,7 @@ export const getDashboardStats = async () => {
 
   const revenueResult = await prisma.order.aggregate({
     _sum: {
-      totalAmount: true,
+      subtotal: true,
     },
   });
 
@@ -18,7 +18,7 @@ export const getDashboardStats = async () => {
     users,
     vendors,
     orders,
-    revenue: revenueResult._sum.totalAmount || 0,
+    revenue: revenueResult._sum?.subtotal || 0,
   };
 };
 

@@ -14,7 +14,7 @@ export const listAuditLogs = async (query: any) => {
       where,
       skip,
       take: limit,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { timestamp: 'desc' },
     }),
     prisma.auditLog.count({ where }),
   ]);
@@ -35,7 +35,7 @@ export const listSecurityEvents = async (query: any) => {
       where,
       skip,
       take: limit,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { timestamp: 'desc' },
     }),
     prisma.securityEvent.count({ where }),
   ]);

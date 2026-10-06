@@ -8,7 +8,7 @@ export const createNotification = async (userId: string, type: string, title: st
       type,
       title,
       message,
-      isRead: false,
+      read: false,
     },
   });
   return notification;
@@ -19,7 +19,7 @@ export const getUserNotifications = async (userId: string, query: any) => {
   const skip = (page - 1) * limit;
 
   const where: any = { userId };
-  if (unreadOnly) where.isRead = false;
+  if (unreadOnly) where.read = false;
 
   const [notifications, total] = await Promise.all([
     prisma.notification.findMany({
@@ -45,7 +45,7 @@ export const markAsRead = async (userId: string, id: string) => {
 
   await prisma.notification.update({
     where: { id },
-    data: { isRead: true },
+    data: { read: true },
   });
 
   return { success: true };

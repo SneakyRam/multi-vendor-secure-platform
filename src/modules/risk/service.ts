@@ -6,9 +6,9 @@ export const evaluateEntityRisk = async (entityId: string, type: 'user' | 'vendo
   // Find related security events for the entity
   const events = await prisma.securityEvent.findMany({
     where: {
-      userId: type === 'user' || type === 'vendor' ? entityId : undefined,
+      actorId: type === 'user' || type === 'vendor' ? entityId : undefined,
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { timestamp: 'desc' },
     take: 10,
   });
 

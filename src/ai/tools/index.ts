@@ -1,5 +1,5 @@
 import { SecurityContext } from '../../types/auth.js';
-import { prisma } from '../../database/prisma/index.js';
+import { prisma } from '../../database/prisma.js';
 
 export type AiToolHandler = (context: SecurityContext, args: any) => Promise<any>;
 
@@ -37,11 +37,14 @@ export const checkOrderStatus: AiTool = {
     }
     
     // Simple authorization check
-    if (context.role === 'CUSTOMER' && order.customerId !== context.userId) {
-      return { success: false, message: 'Not authorized to view this order' };
+    if (context.role === 'CUSTOMER') {
+      const orderGroup = await prisma.orderGroup.findUnique({ where: { id: order.orderGroupId } });
+      if (!orderGroup || orderGroup.customerId !== context.userId) {
+        return { success: false, message: 'Not authorized to view this order' };
+      }
     }
     
-    return { success: true, data: { status: order.status, total: order.total } };
+    return { success: true, data: { status: order.status, total: order.subtotal } };
   },
 };
 
