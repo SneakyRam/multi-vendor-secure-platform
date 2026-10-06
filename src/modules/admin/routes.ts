@@ -16,4 +16,7 @@ router.post('/users/:id/suspend', validateRequest(suspendUserSchema), adminContr
 
 router.post('/vendors/:id/approve', validateRequest(approveVendorSchema), adminController.approveVendor);
 
+router.get('/graph', adminController.getGraph);
+router.get('/events', adminController.getEvents);
+
 export default router;

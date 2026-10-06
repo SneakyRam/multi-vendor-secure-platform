@@ -50,3 +50,16 @@ export const approveVendor = async (vendorId: string) => {
 
   return { success: true };
 };
+
+export const getSecurityEvents = async (limit: number = 50) => {
+  const events = await prisma.securityEvent.findMany({
+    orderBy: { timestamp: 'desc' },
+    take: limit,
+    include: {
+      actor: {
+        select: { email: true, name: true, role: true }
+      }
+    }
+  });
+  return events;
+};

@@ -30,3 +30,23 @@ export const approveVendor = async (req: Request, res: Response, next: NextFunct
     next(error);
   }
 };
+
+export const getGraph = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { limit } = req.query;
+    const graphData = await adminService.getGlobalGraph(limit ? parseInt(limit as string, 10) : 100);
+    res.json({ success: true, data: graphData });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getEvents = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { limit } = req.query;
+    const events = await adminService.getSecurityEvents(limit ? parseInt(limit as string, 10) : 50);
+    res.json({ success: true, data: events });
+  } catch (error) {
+    next(error);
+  }
+};

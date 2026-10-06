@@ -160,6 +160,59 @@ export class GraphService {
   async getUserRelationships(userId: string): Promise<GraphData> {
     return this.getEntityGraph(userId, 'User', 2)
   }
+
+  async getGlobalGraph(limit: number = 100): Promise<GraphData> {
+    const session = getNeo4jSession('READ')
+    try {
+      const result = await session.run(
+        `MATCH path = (n)-[r]->(m)
+         RETURN path LIMIT toInteger($limit)`,
+        { limit }
+      )
+      
+      const nodesMap = new Map<string, GraphNode>()
+      const edgesMap = new Map<string, GraphEdge>()
+
+      for (const record of result.records) {
+        const path = record.get('path')
+        for (const segment of path.segments) {
+          const start = segment.start
+          const end = segment.end
+          const rel = segment.relationship
+
+          nodesMap.set(start.identity.toString(), {
+            id: start.identity.toString(),
+            label: start.labels[0] || 'Unknown',
+            properties: start.properties
+          })
+          
+          nodesMap.set(end.identity.toString(), {
+            id: end.identity.toString(),
+            label: end.labels[0] || 'Unknown',
+            properties: end.properties
+          })
+
+          edgesMap.set(rel.identity.toString(), {
+            id: rel.identity.toString(),
+            label: rel.type,
+            startNodeId: rel.start.toString(),
+            endNodeId: rel.end.toString(),
+            properties: rel.properties
+          })
+        }
+      }
+
+      return {
+        nodes: Array.from(nodesMap.values()),
+        edges: Array.from(edgesMap.values())
+      }
+    } catch (err) {
+      logger.warn({ err }, 'Failed to fetch global graph')
+      return { nodes: [], edges: [] }
+    } finally {
+      await session.close()
+    }
+  }
 }
 
 export const graphService = new GraphService()
