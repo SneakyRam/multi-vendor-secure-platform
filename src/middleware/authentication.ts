@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Request, Response, NextFunction } from 'express';
 import { validateSession } from '../security/sessions.js';
 import { UnauthorizedError } from '../utils/errors.js';

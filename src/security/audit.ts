@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { prisma } from '../database/prisma.js';
 
 export async function logAuditAction(

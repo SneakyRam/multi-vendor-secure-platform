@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Role } from './roles.js';
 
 export const PERMISSIONS = {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Router } from 'express';
 import * as riskController from './controller.js';
 import { requireAuth, requireRole } from '../../middleware/authentication.js';

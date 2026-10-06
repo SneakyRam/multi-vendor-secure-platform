@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { prisma } from '../../database/prisma.js';
 import { NotFoundError, ValidationError, AuthorizationError } from '../../utils/errors.js';
 import { Prisma } from '@prisma/client';

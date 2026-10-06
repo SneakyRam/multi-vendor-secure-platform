@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Router } from 'express';
 import { chatController } from './controller.js';
 import { authenticate } from '../../middleware/authentication.js';

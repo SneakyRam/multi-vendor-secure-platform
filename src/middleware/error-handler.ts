@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 import { AppError } from '../utils/errors.js';

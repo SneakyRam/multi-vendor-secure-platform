@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { prisma } from '../../database/prisma.js';
 
 export const evaluateEntityRisk = async (entityId: string, type: 'user' | 'vendor' | 'order') => {

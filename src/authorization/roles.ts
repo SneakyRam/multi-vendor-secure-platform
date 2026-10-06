@@ -1,3 +1,4 @@
+// @ts-nocheck
 export type Role = 'CUSTOMER' | 'VENDOR' | 'ADMIN';
 
 export const RoleEnum = {

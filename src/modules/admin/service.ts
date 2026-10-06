@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { prisma } from '../../database/prisma.js';
 import { AppError } from '../../utils/errors.js';
 

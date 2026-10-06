@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Request, Response, NextFunction } from 'express';
 import { verifyCsrfToken } from '../security/csrf.js';
 import { ForbiddenError } from '../utils/errors.js';

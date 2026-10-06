@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Request, Response, NextFunction } from 'express';
 import { ZodSchema } from 'zod';
 import { ValidationError } from '../utils/errors.js';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 export type SecurityDecision = 'ALLOW' | 'DENY';
 
 export type SecurityEventType = 

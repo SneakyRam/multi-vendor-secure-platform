@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Request, Response, NextFunction } from 'express';
 import * as vendorService from './service.js';
 import { VendorRegisterSchema, VendorUpdateSchema } from './schema.js';

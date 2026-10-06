@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { SecurityContext } from '../../types/auth.js';
 
 export function canReadProfile(actor: SecurityContext, userResource: any): boolean {

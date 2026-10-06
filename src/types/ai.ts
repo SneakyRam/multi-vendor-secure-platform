@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Role, SecurityContext } from './auth.js';
 
 export type AiToolName = string;

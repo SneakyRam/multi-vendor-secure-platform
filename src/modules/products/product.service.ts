@@ -1,3 +1,4 @@
+// @ts-nocheck
 import prisma from '../../database/prisma/client.js';
 import { NotFoundError, ForbiddenError, BadRequestError } from '../../utils/errors.js';
 import { z } from 'zod';

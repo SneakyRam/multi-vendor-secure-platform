@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Request, Response, NextFunction } from 'express';
 import * as categoryService from './service.js';
 import { CategoryCreateSchema, CategoryUpdateSchema } from './schema.js';

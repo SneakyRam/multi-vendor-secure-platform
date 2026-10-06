@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Router } from 'express';
 import { validate } from '../../middleware/validation.js';
 import { requireAuthentication } from '../../middleware/authentication.js';

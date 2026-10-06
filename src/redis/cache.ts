@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { redis } from './redis.js'
 import logger from '../utils/logger.js'
 

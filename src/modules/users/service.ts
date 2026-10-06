@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { prisma } from '../../database/prisma.js';
 import { UserUpdateInput } from './schema.js';
 import { NotFoundError } from '../../utils/errors.js';

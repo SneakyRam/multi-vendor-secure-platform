@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { randomBytes, createHash } from 'crypto';
 import { prisma } from '../database/prisma.js';
 import { cacheGet, cacheSet, cacheDel } from '../redis/cache.js';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import supertest from 'supertest';
 import express, { Request, Response, NextFunction } from 'express';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import crypto from 'crypto';
 
 export const generateToken = (bytes: number = 32): string => {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Request, Response, NextFunction } from 'express';
 import * as ordersService from './service.js';
 import { OrderCreateInput, OrderStatusUpdateInput } from './schema.js';

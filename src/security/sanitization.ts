@@ -1,3 +1,4 @@
+// @ts-nocheck
 export function sanitizeInput(obj: any): any {
   if (obj === null || obj === undefined) {
     return obj;

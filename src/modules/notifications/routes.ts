@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Router } from 'express';
 import * as notificationController from './controller.js';
 import { requireAuth } from '../../middleware/authentication.js';

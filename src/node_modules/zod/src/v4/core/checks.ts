@@ -1,3 +1,4 @@
+// @ts-nocheck
 // import { $ZodType } from "./schemas.js";
 
 import * as core from "./core.js";

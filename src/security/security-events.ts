@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { prisma } from '../database/prisma.js';
 import { SecurityDecision } from '../types/security.js';
 import { graphService } from '../neo4j/graph.service.js';

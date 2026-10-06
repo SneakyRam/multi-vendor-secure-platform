@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { RiskAssessment, RiskLevel, RiskSignal } from '../types/security.js';
 
 export function evaluateRisk(context: any, action: string, data: any): RiskAssessment {

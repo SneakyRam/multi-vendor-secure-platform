@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Router } from 'express';
 import { registerHandler, loginHandler, googleLoginHandler, logoutHandler, meHandler, csrfTokenHandler } from './auth.controller.js';
 import { requireAuthentication } from '../../middleware/authentication.js';

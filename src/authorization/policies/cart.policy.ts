@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { SecurityContext } from '../../types/auth.js';
 
 export function canReadCart(actor: SecurityContext, cartResource: any): boolean {

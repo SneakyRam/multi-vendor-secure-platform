@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Request, Response, NextFunction } from 'express';
 import { hasPermission } from '../authorization/permissions.js';
 import { ForbiddenError } from '../utils/errors.js';

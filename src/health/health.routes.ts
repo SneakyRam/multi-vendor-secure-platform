@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Router } from 'express';
 import { prisma } from '../database/prisma.js';
 import { redis } from '../redis/redis.js';

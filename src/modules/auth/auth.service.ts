@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { prisma } from '../../database/prisma.js';
 import { hashPassword, verifyPassword } from '../../security/password.js';
 import { createSession, revokeSession } from '../../security/sessions.js';

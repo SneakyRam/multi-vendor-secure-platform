@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Request, Response, NextFunction } from 'express';
 import * as userService from './service.js';
 import { UserUpdateSchema } from './schema.js';

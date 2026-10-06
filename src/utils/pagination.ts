@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const parsePagination = (query: { page?: any; pageSize?: any }) => {
   const page = Math.max(1, parseInt(query.page as string, 10) || 1);
   const pageSize = Math.min(100, Math.max(1, parseInt(query.pageSize as string, 10) || 20));

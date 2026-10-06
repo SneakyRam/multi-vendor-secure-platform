@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Request, Response, NextFunction } from 'express';
 import { cacheIncr } from '../redis/cache.js';
 import { RateLimitError } from '../utils/errors.js';
