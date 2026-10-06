@@ -5,9 +5,9 @@
   "main": "dist/server/server.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/server/server.ts",
+    "dev": "node --env-file=.env --import tsx --watch server/server.ts",
     "build": "tsc",
-    "start": "node dist/server/server.js",
+    "start": "node --env-file=.env --import tsx server/server.ts",
     "test": "vitest run",
     "seed": "tsx prisma/seed.ts",
     "prisma:generate": "prisma generate",

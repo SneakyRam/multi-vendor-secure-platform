@@ -11,7 +11,7 @@ const logger = pino({
     paths: ['password', 'token', 'secret', 'SESSION_SECRET', 'CSRF_SECRET', 'authorization', 'cookie'],
     censor: '[REDACTED]',
   },
-  ...(isDev
+  ...(isDev && parseInt(process.versions.node.split('.')[0], 10) < 24
     ? {
         transport: {
           target: 'pino-pretty',

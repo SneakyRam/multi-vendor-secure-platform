@@ -1,0 +1,359 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  VENDOR
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING
+}
+
+enum VendorStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING
+  REJECTED
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum OrderGroupStatus {
+  PENDING
+  PARTIALLY_FULFILLED
+  FULFILLED
+  CANCELLED
+}
+
+enum NotificationType {
+  ORDER
+  INVENTORY
+  SECURITY
+  SYSTEM
+}
+
+enum SecurityDecision {
+  ALLOW
+  DENY
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
+}
+
+model User {
+  id           String      @id @default(uuid())
+  email        String      @unique
+  passwordHash String?
+  googleId     String?     @unique
+  name         String
+  role         Role        @default(CUSTOMER)
+  status       UserStatus  @default(ACTIVE)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  lastLoginAt  DateTime?
+
+  sessions       Session[]
+  vendor         Vendor?
+  cart           Cart?
+  orders         OrderGroup[]
+  addresses      Address[]
+  reviews        Review[]
+  notifications  Notification[]
+  auditLogs      AuditLog[]      @relation("ActorAuditLogs")
+  securityEvents SecurityEvent[] @relation("ActorSecurityEvents")
+
+  @@index([email])
+  @@index([role])
+  @@index([status])
+}
+
+model Session {
+  id         String    @id @default(uuid())
+  userId     String
+  tokenHash  String    @unique
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  lastSeenAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([tokenHash])
+}
+
+model Vendor {
+  id           String       @id @default(uuid())
+  userId       String       @unique
+  businessName String
+  slug         String       @unique
+  description  String?
+  logo         String?
+  status       VendorStatus @default(PENDING)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  verifiedAt   DateTime?
+
+  user     User      @relation(fields: [userId], references: [id])
+  products Product[]
+  orders   Order[]
+
+  @@index([userId])
+  @@index([slug])
+  @@index([status])
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  parentId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+  products Product[]
+
+  @@index([slug])
+  @@index([parentId])
+}
+
+model Product {
+  id             String        @id @default(uuid())
+  vendorId       String
+  categoryId     String?
+  name           String
+  description    String?
+  price          Decimal       @db.Decimal(10,2)
+  compareAtPrice Decimal?      @db.Decimal(10,2)
+  stock          Int           @default(0)
+  sku            String?
+  images         String[]
+  status         ProductStatus @default(ACTIVE)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  vendor     Vendor      @relation(fields: [vendorId], references: [id])
+  category   Category?   @relation(fields: [categoryId], references: [id])
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+  reviews    Review[]
+
+  @@index([vendorId])
+  @@index([categoryId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([price])
+}
+
+model Cart {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User       @relation(fields: [userId], references: [id])
+  items CartItem[]
+
+  @@index([userId])
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String
+  productId String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cart    Cart    @relation(fields: [cartId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([cartId, productId])
+  @@index([cartId])
+  @@index([productId])
+}
+
+model OrderGroup {
+  id                String           @id @default(uuid())
+  customerId        String
+  totalAmount       Decimal          @db.Decimal(12,2)
+  status            OrderGroupStatus @default(PENDING)
+  shippingAddressId String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  customer        User     @relation(fields: [customerId], references: [id])
+  orders          Order[]
+  shippingAddress Address? @relation(fields: [shippingAddressId], references: [id])
+
+  @@index([customerId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Order {
+  id           String      @id @default(uuid())
+  orderGroupId String
+  vendorId     String
+  subtotal     Decimal     @db.Decimal(12,2)
+  status       OrderStatus @default(PENDING)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  orderGroup OrderGroup  @relation(fields: [orderGroupId], references: [id])
+  vendor     Vendor      @relation(fields: [vendorId], references: [id])
+  items      OrderItem[]
+
+  @@index([orderGroupId])
+  @@index([vendorId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id           String  @id @default(uuid())
+  orderId      String
+  productId    String
+  productName  String
+  productPrice Decimal @db.Decimal(10,2)
+  quantity     Int
+  subtotal     Decimal @db.Decimal(12,2)
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model Address {
+  id         String      @id @default(uuid())
+  userId     String
+  type       AddressType @default(SHIPPING)
+  label      String?
+  line1      String
+  line2      String?
+  city       String
+  state      String
+  postalCode String
+  country    String      @default("IN")
+  isDefault  Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  user   User         @relation(fields: [userId], references: [id])
+  orders OrderGroup[]
+
+  @@index([userId])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
+  @@index([productId])
+  @@index([userId])
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  read      Boolean          @default(false)
+  metadata  Json?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  timestamp    DateTime @default(now())
+  actorId      String?
+  actorRole    String?
+  action       String
+  resourceType String
+  resourceId   String?
+  requestId    String?
+  ipAddress    String?
+  metadata     Json?
+
+  actor User? @relation("ActorAuditLogs", fields: [actorId], references: [id])
+
+  @@index([actorId])
+  @@index([action])
+  @@index([resourceType])
+  @@index([timestamp])
+}
+
+model SecurityEvent {
+  id           String           @id @default(uuid())
+  timestamp    DateTime         @default(now())
+  actorId      String?
+  actorRole    String?
+  action       String
+  resourceType String?
+  resourceId   String?
+  decision     SecurityDecision
+  reason       String?
+  riskScore    Int?
+  requestId    String?
+  ipAddress    String?
+  userAgent    String?
+  metadata     Json?
+
+  actor User? @relation("ActorSecurityEvents", fields: [actorId], references: [id])
+
+  @@index([actorId])
+  @@index([decision])
+  @@index([action])
+  @@index([timestamp])
+  @@index([riskScore])
+}

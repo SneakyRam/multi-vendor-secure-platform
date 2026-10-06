@@ -1,4 +1,19 @@
 {
+  "name": "buildsecure-platform",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node Wine-build-secure-MH-/node_modules/concurrently/dist/bin/concurrently.js \"npm --prefix Wine-build-secure-MH- run dev:frontend\" \"npm --prefix src run dev\"",
+    "dev:frontend": "npm --prefix Wine-build-secure-MH- run dev:frontend",
+    "dev:backend": "npm --prefix src run dev",
+    "build": "npm --prefix src run build && npm --prefix Wine-build-secure-MH- run build:frontend",
+    "build:frontend": "npm --prefix Wine-build-secure-MH- run build:frontend",
+    "build:backend": "npm --prefix src run build",
+    "start": "npm --prefix src start",
+    "seed": "npm --prefix src run seed",
+    "prisma:generate": "npm --prefix src run prisma:generate"
+  },
   "devDependencies": {
     "prisma": "^5.22.0"
   },
