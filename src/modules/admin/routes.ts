@@ -18,5 +18,6 @@ router.post('/vendors/:id/approve', validateRequest(approveVendorSchema), adminC
 
 router.get('/graph', adminController.getGraph);
 router.get('/events', adminController.getEvents);
+router.post('/seed', adminController.seedGraph);
 
 export default router;

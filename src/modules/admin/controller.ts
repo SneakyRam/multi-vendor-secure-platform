@@ -50,3 +50,12 @@ export const getEvents = async (req: Request, res: Response, next: NextFunction)
     next(error);
   }
 };
+
+export const seedGraph = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await adminService.seedDummyData();
+    res.json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+};
