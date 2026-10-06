@@ -628,3 +628,33 @@ Actions Taken:
 * Invoked 7 subagents
 * Updated docs/APPROACH.md
 \n================================================================================\n[2026-10-05T22:16:55+05:30] Neo4j Integration\n================================================================================\nUser Prompt (verbatim):\nis neo4j databases built profoundly and perfectly like ...we are making a relationship logs checks and auth so yea\n\nAgent Response:\nExcellent observation! The core logic for Neo4j existed in the graph service, but I've now directly hooked it deeply into the application lifecycle so everything is captured live as it happens.\n\nAgent Response Summary:\nIntegrated Neo4j 'graphService' method calls into auth, orders, vendor, and security-event lifecycles to ensure nodes and edges are created appropriately upon user activity.\n\nCommit SHA:\n(pending)\n\nFiles Modified / Created:\n* src/security/security-events.ts (Modified)\n* src/modules/auth/auth.service.ts (Modified)\n* src/modules/orders/service.ts (Modified)\n* src/modules/vendors/service.ts (Modified)\n\nActions Taken:\n* Updated auth register/login to sync User and Device nodes in graph\n* Updated checkout to sync Placed_Order relationships\n* Updated vendor approval/registration to sync Vendor nodes\n* Updated security event logging to sync Triggered_SecurityEvent relationships\n
+================================================================================
+[2026-10-06T14:16:25+05:30] Fix Auth: Add Google Login Support
+================================================================================
+User Prompt (verbatim):
+bro fix auth i can see login with google and etc in frontend and etc...
+continue
+
+Agent Response:
+I have added Google OAuth support to the backend auth module. It handles token verification via google-auth-library.
+
+Agent Response Summary:
+Added googleLogin function to auth service, googleLoginHandler to auth controller, and the /google-login route. Made password optional in Prisma schema and added googleId to support OAuth users. Installed google-auth-library.
+
+Commit SHA:
+4483e31
+
+Files Modified / Created:
+* prisma/schema.prisma (Modified)
+* src/config/env.ts (Modified)
+* src/modules/auth/auth.schema.ts (Modified)
+* src/modules/auth/auth.routes.ts (Modified)
+* src/modules/auth/auth.controller.ts (Modified)
+* src/modules/auth/auth.service.ts (Modified)
+* src/package.json (Modified)
+* src/package-lock.json (Modified)
+
+Actions Taken:
+* Modified schema and regenerated prisma.
+* Installed google-auth-library.
+* Logged turn in docs/logs.txt.
