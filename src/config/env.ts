@@ -12,6 +12,7 @@ const envSchema = z.object({
   CSRF_SECRET: z.string().min(32, 'CSRF_SECRET must be at least 32 characters'),
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
   AI_API_KEY: z.string().optional().default(''),
+  GOOGLE_CLIENT_ID: z.string().optional().default(''),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
   SESSION_TTL_SECONDS: z.coerce.number().default(86400),
   RATE_LIMIT_WINDOW_SECONDS: z.coerce.number().default(60),

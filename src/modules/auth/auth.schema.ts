@@ -14,3 +14,9 @@ export const LoginInputSchema = z.object({
 
 export type RegisterInput = z.infer<typeof RegisterInputSchema>;
 export type LoginInput = z.infer<typeof LoginInputSchema>;
+
+export const GoogleLoginInputSchema = z.object({
+  token: z.string(),
+});
+
+export type GoogleLoginInput = z.infer<typeof GoogleLoginInputSchema>;

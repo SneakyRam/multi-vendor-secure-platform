@@ -43,6 +43,25 @@ export async function loginHandler(req: Request, res: Response, next: NextFuncti
   }
 }
 
+export async function googleLoginHandler(req: Request, res: Response, next: NextFunction) {
+  try {
+    const input = req.body;
+    if (!input.token) {
+      throw new Error('Google token is required');
+    }
+    const { user, token } = await authService.googleLogin(input.token, req.ip, req.get('User-Agent'));
+
+    res.cookie('sessionId', token, COOKIE_OPTIONS);
+
+    res.status(200).json({
+      success: true,
+      data: { user },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function logoutHandler(req: Request, res: Response, next: NextFunction) {
   try {
     const token = req.cookies?.sessionId;
